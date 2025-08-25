@@ -857,20 +857,23 @@
 
         function showMessage(message, type) {
             // Remove existing messages
-            const existingMessages = document.querySelectorAll('.success, .error, .info');
-            existingMessages.forEach(msg => {
-                if (msg.getAttribute('data-translate') !== 'howToUseTitle') {
-                    msg.remove();
-                }
-            });
+            const existingMessages = document.querySelectorAll('.success, .error');
+            existingMessages.forEach(msg => msg.remove());
 
             const messageDiv = document.createElement('div');
             messageDiv.className = type;
             messageDiv.innerHTML = message;
             
             const container = document.querySelector('.container');
-            const firstInfo = container.querySelector('.info');
-            container.insertBefore(messageDiv, firstInfo.nextSibling);
+            const header = container.querySelector('.header');
+            
+            // Insert after header
+            if (header && header.nextSibling) {
+                container.insertBefore(messageDiv, header.nextSibling);
+            } else {
+                // Fallback: insert after header
+                header.parentNode.insertBefore(messageDiv, header.nextElementSibling);
+            }
 
             // Auto-remove after 5 seconds
             setTimeout(() => {
